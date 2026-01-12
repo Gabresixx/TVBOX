@@ -169,3 +169,14 @@
 .animate-progress {
   animation: progress 30s linear infinite;
 }
+html, body {
+  overflow: hidden !important; /* Trava a tela */
+  cursor: none; /* Esconde o mouse para parecer nativo */
+  user-select: none; /* Impede seleção de texto */
+}
+
+/* Extra recomendado em TV: evita bounce/scroll por gesto */
+body {
+  overscroll-behavior: none;
+  touch-action: none;
+}

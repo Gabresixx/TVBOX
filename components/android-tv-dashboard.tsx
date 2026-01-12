@@ -123,7 +123,7 @@ export default function AndroidTVDashboard() {
   return (
     <div
       ref={containerRef}
-      className="relative h-screen w-screen overflow-x-hidden overflow-y-auto bg-background scroll-smooth"
+      className="relative h-screen w-screen overflow-x-hidden overflow-y-auto bg-background"
       style={{
         scrollbarWidth: "none",
         msOverflowStyle: "none",
@@ -136,15 +136,7 @@ export default function AndroidTVDashboard() {
         }
       `}</style>
 
-      {/* Ambient Background Effects */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#050508] via-[#0a0a12] to-[#080810]" />
-        <div className="absolute top-1/4 left-1/3 h-[800px] w-[800px] rounded-full bg-primary/5 blur-[200px] animate-pulse" />
-        <div
-          className="absolute bottom-1/4 right-1/4 h-[600px] w-[600px] rounded-full bg-accent/5 blur-[180px] animate-pulse"
-          style={{ animationDelay: "1s" }}
-        />
-      </div>
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-[#050508] via-[#0a0a12] to-[#080810]" />
 
       {/* Side Navigation */}
       <SideNavigation
@@ -160,7 +152,7 @@ export default function AndroidTVDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <main className={`relative transition-all duration-500 ${isNavExpanded ? "ml-72" : "ml-20"}`}>
+      <main className={`relative transition-all duration-300 ${isNavExpanded ? "ml-72" : "ml-20"}`}>
         <section className="relative h-[60vh] min-h-[400px]">
           <HeroVideo isFocused={focusSection === "hero"} />
         </section>
@@ -171,9 +163,8 @@ export default function AndroidTVDashboard() {
         </section>
       </main>
 
-      {/* Navigation Hint */}
       <div className="fixed bottom-8 right-8 z-50">
-        <div className="glass flex items-center gap-4 rounded-2xl px-5 py-3">
+        <div className="surface-elevated flex items-center gap-4 rounded-2xl px-5 py-3">
           <div className="flex items-center gap-2">
             <kbd className="rounded-lg bg-white/10 px-2 py-1 text-xs text-muted-foreground">←</kbd>
             <span className="text-xs text-muted-foreground">Menu</span>

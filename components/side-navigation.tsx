@@ -36,32 +36,27 @@ export default function SideNavigation({
 }: SideNavigationProps) {
   return (
     <nav
-      className={`fixed left-0 top-0 z-50 h-full transition-all duration-500 ease-out ${isExpanded ? "w-72" : "w-20"}`}
+      className={`fixed left-0 top-0 z-50 h-full transition-all duration-300 ${isExpanded ? "w-72" : "w-20"}`}
       onMouseEnter={() => onExpandChange(true)}
       onMouseLeave={() => !isFocused && onExpandChange(false)}
     >
-      {/* Background with blur - invisible when collapsed */}
       <div
-        className={`absolute inset-0 transition-all duration-500 ${
-          isExpanded ? "glass-strong opacity-100" : "opacity-0"
+        className={`absolute inset-0 bg-surface-dark border-r border-border transition-opacity duration-300 ${
+          isExpanded ? "opacity-100" : "opacity-0"
         }`}
       />
 
-      {/* Gradient Edge */}
       <div
-        className={`absolute right-0 top-0 h-full w-px transition-opacity duration-500 ${
+        className={`absolute right-0 top-0 h-full w-px bg-border transition-opacity duration-300 ${
           isExpanded ? "opacity-100" : "opacity-0"
         }`}
-        style={{
-          background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent)",
-        }}
       />
 
       {/* Logo */}
       <div className="relative flex h-24 items-center justify-center">
         <div
-          className={`flex items-center gap-3 transition-all duration-500 ${
-            isExpanded ? "opacity-100" : "opacity-0 scale-90"
+          className={`flex items-center gap-3 transition-opacity duration-300 ${
+            isExpanded ? "opacity-100" : "opacity-0"
           }`}
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent">
@@ -86,21 +81,21 @@ export default function SideNavigation({
             <button
               key={item.id}
               onClick={() => setActiveIndex(index)}
-              className={`group relative flex items-center gap-4 rounded-2xl px-4 py-4 transition-all duration-300 ${
+              className={`group relative flex items-center gap-4 rounded-2xl px-4 py-4 transition-colors duration-200 ${
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
+                  ? "bg-primary text-primary-foreground"
                   : isSelected
-                    ? "bg-white/10 text-foreground"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                    ? "bg-surface-light text-foreground"
+                    : "text-muted-foreground hover:bg-surface-medium hover:text-foreground"
               }`}
             >
-              {/* Icon */}
-              <div className={`transition-transform duration-300 ${isActive ? "scale-110" : ""}`}>{item.icon}</div>
+              {/* Icon - removed scale transform */}
+              <div>{item.icon}</div>
 
               {/* Label */}
               <span
-                className={`whitespace-nowrap font-medium transition-all duration-300 ${
-                  isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                className={`whitespace-nowrap font-medium transition-opacity duration-300 ${
+                  isExpanded ? "opacity-100" : "opacity-0"
                 }`}
               >
                 {item.name}
@@ -118,8 +113,8 @@ export default function SideNavigation({
       {/* User Profile */}
       <div className="absolute bottom-8 left-0 right-0 px-3">
         <div
-          className={`flex items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-300 ${
-            isExpanded ? "bg-white/5" : ""
+          className={`flex items-center gap-3 rounded-2xl px-4 py-3 transition-colors duration-200 ${
+            isExpanded ? "bg-surface-medium" : ""
           }`}
         >
           <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">

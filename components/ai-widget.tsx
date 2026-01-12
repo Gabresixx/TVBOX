@@ -16,11 +16,7 @@ interface MovieSuggestion {
 }
 
 const weatherMovieMap: Record<WeatherData["condition"], MovieSuggestion> = {
-  sunny: {
-    title: "Mamma Mia!",
-    reason: "Dia ensolarado pede uma comédia musical alegre!",
-    genre: "Comédia Musical",
-  },
+  sunny: { title: "Mamma Mia!", reason: "Dia ensolarado pede uma comédia musical alegre!", genre: "Comédia Musical" },
   cloudy: {
     title: "Blade Runner 2049",
     reason: "Céu nublado combina com ficção científica contemplativa.",
@@ -31,16 +27,8 @@ const weatherMovieMap: Record<WeatherData["condition"], MovieSuggestion> = {
     reason: "Chuva lá fora? Hora de um clássico aconchegante!",
     genre: "Musical Clássico",
   },
-  snowy: {
-    title: "Frozen II",
-    reason: "Neve caindo? Perfeito para uma aventura gelada!",
-    genre: "Animação",
-  },
-  windy: {
-    title: "O Mágico de Oz",
-    reason: "Ventos fortes pedem uma aventura mágica!",
-    genre: "Fantasia Clássica",
-  },
+  snowy: { title: "Frozen II", reason: "Neve caindo? Perfeito para uma aventura gelada!", genre: "Animação" },
+  windy: { title: "O Mágico de Oz", reason: "Ventos fortes pedem uma aventura mágica!", genre: "Fantasia Clássica" },
 }
 
 const weatherIcons = {
@@ -97,8 +85,8 @@ export default function AIWidget() {
         onClick={() => setIsExpanded(!isExpanded)}
         onFocus={() => setIsExpanded(true)}
         className={`
-          glass-strong flex items-center gap-3 rounded-full px-4 py-3 
-          transition-all duration-300 hover:scale-105
+          surface-elevated flex items-center gap-3 rounded-full px-4 py-3 
+          transition-opacity duration-200 hover:bg-surface-light
           ${isExpanded ? "opacity-0 pointer-events-none" : "opacity-100"}
         `}
       >
@@ -111,14 +99,12 @@ export default function AIWidget() {
 
       <div
         className={`
-          absolute top-0 right-0 glass-strong w-80 overflow-hidden rounded-3xl
-          transition-all duration-400 ease-out origin-top-right
-          ${
-            isExpanded ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
-          }
+          absolute top-0 right-0 surface-elevated w-80 overflow-hidden rounded-3xl
+          transition-all duration-200
+          ${isExpanded ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}
         `}
       >
-        <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent">
               <Sparkles className="h-5 w-5 text-white" />
@@ -130,7 +116,7 @@ export default function AIWidget() {
           </div>
           <button
             onClick={() => setIsExpanded(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-light text-muted-foreground transition-colors duration-200 hover:text-foreground"
           >
             <X className="h-4 w-4" />
           </button>
@@ -144,7 +130,7 @@ export default function AIWidget() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3">
+              <div className="flex items-center justify-between rounded-2xl bg-surface-light px-4 py-3">
                 <div className="flex items-center gap-3">
                   {weatherIcons[weather.condition]}
                   <span className="text-sm font-medium text-foreground">{weather.description}</span>
@@ -162,7 +148,7 @@ export default function AIWidget() {
                 <p className="text-sm leading-relaxed text-muted-foreground">{suggestion.reason}</p>
               </div>
 
-              <button className="w-full rounded-2xl bg-primary/20 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/30">
+              <button className="w-full rounded-2xl bg-primary/20 py-3 text-sm font-semibold text-primary transition-colors duration-200 hover:bg-primary/30">
                 Ver Detalhes
               </button>
             </div>

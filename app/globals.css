@@ -3,13 +3,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Apple TV tvOS dark theme with frosted glass support */
+/* Apple TV tvOS dark theme - OPTIMIZED: removed blur/glass effects, using solid colors */
 :root {
   --background: oklch(0.06 0.01 260);
   --foreground: oklch(0.98 0 0);
-  --card: oklch(0.1 0.01 260);
+  --card: oklch(0.12 0.01 260);
   --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.1 0.01 260);
+  --popover: oklch(0.12 0.01 260);
   --popover-foreground: oklch(0.98 0 0);
   --primary: oklch(0.65 0.18 250);
   --primary-foreground: oklch(0.98 0 0);
@@ -38,6 +38,11 @@
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(0.22 0.01 260);
   --sidebar-ring: oklch(0.65 0.18 250);
+
+  /* Solid color alternatives for glass effects */
+  --surface-dark: oklch(0.1 0.01 260);
+  --surface-medium: oklch(0.14 0.01 260);
+  --surface-light: oklch(0.18 0.01 260);
 }
 
 .dark {
@@ -73,6 +78,10 @@
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(0.25 0.01 260);
   --sidebar-ring: oklch(0.7 0.15 220);
+
+  --surface-dark: oklch(0.1 0.01 260);
+  --surface-medium: oklch(0.14 0.01 260);
+  --surface-light: oklch(0.18 0.01 260);
 }
 
 @theme inline {
@@ -114,6 +123,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  /* Added solid surface colors */
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-medium: var(--surface-medium);
+  --color-surface-light: var(--surface-light);
 }
 
 @layer base {
@@ -125,58 +138,15 @@
   }
 }
 
-/* Frosted glass utility classes for tvOS style */
+/* Replaced glass utilities with solid backgrounds for TV Box performance */
 @layer utilities {
-  .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .surface {
+    background-color: var(--surface-dark);
+    border: 1px solid var(--border);
   }
 
-  .glass-strong {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+  .surface-elevated {
+    background-color: var(--surface-medium);
+    border: 1px solid var(--border);
   }
-}
-
-/* Added custom animations for 4K TV experience */
-@keyframes gradient-shift {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@keyframes progress {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
-.animate-gradient-shift {
-  animation: gradient-shift 8s ease-in-out infinite;
-}
-
-.animate-progress {
-  animation: progress 30s linear infinite;
-}
-html, body {
-  overflow: hidden !important; /* Trava a tela */
-  cursor: none; /* Esconde o mouse para parecer nativo */
-  user-select: none; /* Impede seleção de texto */
-}
-
-/* Extra recomendado em TV: evita bounce/scroll por gesto */
-body {
-  overscroll-behavior: none;
-  touch-action: none;
 }

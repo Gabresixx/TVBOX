@@ -30,15 +30,12 @@ export default function HeroVideo({ isFocused }: HeroVideoProps) {
 
   return (
     <div
-      className={`relative h-[65vh] w-full overflow-hidden transition-all duration-700 ${
-        isFocused ? "scale-[1.02]" : "scale-100"
-      }`}
+      className="relative h-[65vh] w-full overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Video Background with animated gradient fallback */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-purple-900/30 to-slate-900/50 animate-gradient-shift" />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-purple-900/30 to-slate-900/50" />
         <video
           ref={videoRef}
           className="h-full w-full object-cover opacity-60"
@@ -51,7 +48,7 @@ export default function HeroVideo({ isFocused }: HeroVideoProps) {
         </video>
       </div>
 
-      {/* Gradient Overlays */}
+      {/* Gradient Overlays - kept simple gradients, no animations */}
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-transparent h-32" />
@@ -89,38 +86,35 @@ export default function HeroVideo({ isFocused }: HeroVideoProps) {
             {featuredContent.description}
           </p>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-4 pt-2">
             <button
-              className={`flex items-center gap-3 rounded-lg bg-foreground px-8 py-4 font-bold text-background transition-all duration-300 ${
-                isFocused || isHovered ? "scale-105 shadow-2xl shadow-white/20" : ""
+              className={`flex items-center gap-3 rounded-lg bg-foreground px-8 py-4 font-bold text-background transition-transform duration-200 ${
+                isFocused || isHovered ? "scale-105" : ""
               }`}
             >
               <Play className="h-6 w-6 fill-current" />
               Assistir
             </button>
-            <button className="glass-strong flex items-center gap-3 rounded-lg px-8 py-4 font-semibold text-foreground transition-all hover:bg-white/10">
+            <button className="surface-elevated flex items-center gap-3 rounded-lg px-8 py-4 font-semibold text-foreground transition-colors duration-200 hover:bg-surface-light">
               <Info className="h-6 w-6" />
               Mais Info
             </button>
-            <button className="glass flex h-14 w-14 items-center justify-center rounded-full transition-all hover:bg-white/10">
+            <button className="surface flex h-14 w-14 items-center justify-center rounded-full transition-colors duration-200 hover:bg-surface-light">
               <Plus className="h-6 w-6" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Volume Control */}
       <button
         onClick={() => setIsMuted(!isMuted)}
-        className="absolute bottom-12 right-12 glass flex h-12 w-12 items-center justify-center rounded-full transition-all hover:bg-white/10"
+        className="absolute bottom-12 right-12 surface flex h-12 w-12 items-center justify-center rounded-full transition-colors duration-200 hover:bg-surface-light"
       >
         {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
       </button>
 
-      {/* Progress Bar (decorative) */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
-        <div className="h-full w-1/3 bg-primary animate-progress" />
+        <div className="h-full w-1/3 bg-primary" />
       </div>
     </div>
   )

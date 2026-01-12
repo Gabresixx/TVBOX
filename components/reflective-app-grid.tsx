@@ -1,8 +1,16 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Play, Tv, Music, Gamepad2, Youtube, Radio, Film, Podcast, Store, Globe, Camera, Mic } from "lucide-react"
+
+declare global {
+  interface Window {
+    AndroidInterface?: {
+      openApp: (packageName: string) => void
+    }
+  }
+}
 
 interface App {
   id: number
@@ -10,15 +18,17 @@ interface App {
   icon: React.ReactNode
   gradient: string
   shadowColor: string
+  packageName?: string
 }
 
-const apps: App[] = [
+const APPS: App[] = [
   {
     id: 1,
     name: "Netflix",
     icon: <Play className="h-8 w-8" />,
     gradient: "from-red-600 to-red-800",
     shadowColor: "rgba(220, 38, 38, 0.4)",
+    packageName: "com.netflix.mediaclient",
   },
   {
     id: 2,
@@ -33,6 +43,7 @@ const apps: App[] = [
     icon: <Music className="h-8 w-8" />,
     gradient: "from-green-500 to-green-700",
     shadowColor: "rgba(34, 197, 94, 0.4)",
+    packageName: "com.spotify.music",
   },
   {
     id: 4,
@@ -108,30 +119,105 @@ interface ReflectiveAppGridProps {
 export default function ReflectiveAppGrid({ activeIndex, setActiveIndex, isFocused }: ReflectiveAppGridProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const appRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const containerRef = useRef<HTMLDivElement | null>(null)
   const [isVisible, setIsVisible] = useState(false)
+
+  const cols = 4
+  const maxIndex = APPS.length - 1
+
+  const isAndroidBridgeAvailable = useMemo(() => {
+    return typeof window !== "undefined" && typeof window.AndroidInterface?.openApp === "function"
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timer)
   }, [])
 
+  // Garante foco no item ativo (bom para TV)
   useEffect(() => {
-    if (isFocused && appRefs.current[activeIndex]) {
-      appRefs.current[activeIndex]?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      })
-    }
+    if (!isFocused) return
+    const el = appRefs.current[activeIndex]
+    if (!el) return
+    el.focus()
+    el.scrollIntoView({ behavior: "smooth", block: "center" })
   }, [activeIndex, isFocused])
 
+  // Captura setas/enter no container (em TV é comum o foco ficar dentro da área)
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    function clamp(n: number) {
+      return Math.max(0, Math.min(n, maxIndex))
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (!isFocused) return
+
+      // Alguns controles mandam " " (space) ou "Enter" no OK
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault()
+        launchApp(APPS[activeIndex])
+        return
+      }
+
+      let next = activeIndex
+
+      switch (e.key) {
+        case "ArrowRight":
+          next = clamp(activeIndex + 1)
+          break
+        case "ArrowLeft":
+          next = clamp(activeIndex - 1)
+          break
+        case "ArrowDown":
+          next = clamp(activeIndex + cols)
+          break
+        case "ArrowUp":
+          next = clamp(activeIndex - cols)
+          break
+        default:
+          return
+      }
+
+      e.preventDefault()
+      if (next !== activeIndex) setActiveIndex(next)
+    }
+
+    el.addEventListener("keydown", onKeyDown, { passive: false })
+    return () => el.removeEventListener("keydown", onKeyDown as any)
+  }, [activeIndex, isFocused, setActiveIndex, maxIndex])
+
+  function launchApp(app: App) {
+    if (app.packageName && window.AndroidInterface?.openApp) {
+      window.AndroidInterface.openApp(app.packageName)
+      return
+    }
+
+    // Fallback para web/dev: aqui você pode trocar por modal/toast na UI
+    console.log(
+      `[Launcher] Sem bridge ou packageName: ${app.name}. bridge=${isAndroidBridgeAvailable}, pkg=${app.packageName ?? "n/a"}`
+    )
+  }
+
   return (
-    <div className="grid grid-cols-4 gap-8">
-      {apps.map((app, index) => {
+    <div
+      ref={containerRef}
+      tabIndex={0}
+      className="grid grid-cols-4 gap-8 outline-none"
+      // ao focar a área, garante que exista um item ativo focado
+      onFocus={() => {
+        if (!isFocused) return
+        appRefs.current[activeIndex]?.focus()
+      }}
+    >
+      {APPS.map((app, index) => {
         const isActive = isFocused && index === activeIndex
         const isHovered = hoveredIndex === index
         const shouldHighlight = isActive || isHovered
-        const row = Math.floor(index / 4)
-        const col = index % 4
+        const row = Math.floor(index / cols)
+        const col = index % cols
         const animationDelay = row * 50 + col * 30
 
         return (
@@ -140,10 +226,12 @@ export default function ReflectiveAppGrid({ activeIndex, setActiveIndex, isFocus
             ref={(el) => {
               appRefs.current[index] = el
             }}
-            onClick={() => setActiveIndex(index)}
+            type="button"
+            onFocus={() => setActiveIndex(index)}
+            onClick={() => launchApp(app)}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
-            className="group relative flex flex-col items-center py-4"
+            className="group relative flex flex-col items-center py-4 outline-none"
             style={{
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? "translateY(0)" : "translateY(30px)",
@@ -193,7 +281,7 @@ export default function ReflectiveAppGrid({ activeIndex, setActiveIndex, isFocus
                   />
                 )}
 
-                {/* Focus Ring - more subtle animation */}
+                {/* Focus Ring */}
                 {isActive && (
                   <div
                     className="absolute -inset-1.5 rounded-[1.75rem] ring-4 ring-white/70 ring-offset-2 ring-offset-background"
@@ -204,7 +292,7 @@ export default function ReflectiveAppGrid({ activeIndex, setActiveIndex, isFocus
                 )}
               </div>
 
-              {/* Dynamic Reflection - smoother transition */}
+              {/* Dynamic Reflection */}
               <div
                 className="absolute -bottom-14 left-1/2 h-24 w-28 rounded-3xl"
                 style={{
@@ -217,7 +305,7 @@ export default function ReflectiveAppGrid({ activeIndex, setActiveIndex, isFocus
               />
             </div>
 
-            {/* App Name - smoother transition */}
+            {/* App Name */}
             <span
               className="mt-8 text-sm font-medium"
               style={{

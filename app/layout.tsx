@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-
 import OfflineBanner from "./OfflineBanner"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -32,11 +31,7 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className="dark">
       <body className="font-sans antialiased">

@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
+
 import OfflineBanner from "./OfflineBanner"
 
 const _geist = Geist({ subsets: ["latin"] })
